@@ -1,0 +1,11 @@
+/* For flashed messages; make them stand out using red and italics */
+
+#messages {
+    color: red;
+    font-style: italic;
+}
+
+h1 {
+    font-size: 200%;
+    color: teal;
+}
