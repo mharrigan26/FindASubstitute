@@ -4,13 +4,12 @@ app = Flask(__name__)
 
 # one or the other of these. Defaults to MySQL (PyMySQL)
 # change comment characters to switch to SQLite
-
 import cs304dbi as dbi
-# import cs304dbi_sqlite3 as dbi
+#import cs304dbi_sqlite3 as dbi
 
 import random
 
-app.secret_key = 'your secret here'
+app.secret_key = 'raaaaandom'
 # replace that with a random key
 app.secret_key = ''.join([ random.choice(('ABCDEFGHIJKLMNOPQRSTUVXYZ' +
                                           'abcdefghijklmnopqrstuvxyz' +
@@ -70,13 +69,13 @@ if __name__ == '__main__':
         port = os.getuid()
     # the following database code works for both PyMySQL and SQLite3
     dbi.cache_cnf()
-    dbi.use('wmdb')
+    dbi.use('findasubstitute_db')
     conn = dbi.connect()
     curs = dbi.dict_cursor(conn)
     # the following query works for both MySQL and SQLite
     curs.execute('select current_timestamp as ct')
     row = curs.fetchone()
     ct = row['ct']
-    print('connected to WMDB at {}'.format(ct))
+    print('connected to FindASubstitute at {}'.format(ct))
     app.debug = True
     app.run('0.0.0.0',port)
