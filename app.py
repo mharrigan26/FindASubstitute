@@ -6,7 +6,7 @@ app = Flask(__name__)
 # change comment characters to switch to SQLite
 import cs304dbi as dbi
 #import cs304dbi_sqlite3 as dbi
-
+import database
 import random
 
 app.secret_key = 'raaaaandom'
@@ -21,43 +21,46 @@ app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
 @app.route('/')
 def index():
-    return render_template('main.html',title='Hello')
+    return render_template('main.html',title='Find A Substitute')
 
-@app.route('/greet/', methods=["GET", "POST"])
-def greet():
-    if request.method == 'GET':
-        return render_template('greet.html', title='Customized Greeting')
-    else:
-        try:
-            username = request.form['username'] # throws error if there's trouble
-            flash('form submission successful')
-            return render_template('greet.html',
-                                   title='Welcome '+username,
-                                   name=username)
+@app.route('/profile/', methods=['GET', 'POST'])
+def profile():
+    if request.method == 'POST':
+        conn = dbi.connect()
+        if (request.form.get('name') == ""):
+            flash("missing input: Name is missing")
+        if (request.form.get('username') == ""):
+            flash("missing input: Username is missing")
+        if (request.form.get('password') == ""):
+            flash("missing input: Password is missing")
+        if (request.form.get('email') == ""):
+            flash("missing input: Email is missing")
+        else:
+            name = request.form.get('name')
+            username = request.form.get('username')
+            password = request.form.get('password')
+            email = request.form.get('email')
+            username_exists = database.usernameAvailability(conn, username)
+            email_exists = database.emailAvailability(conn, email)
+            if username_exists:
+                flash('Username already exists')
+            if email_exists:
+                flash('Email already has an account set up')
+            else:
+                database.insertEmployee(conn, name, username, email, password)
+                return redirect(url_for('person_temp', username = username))
+        return(render_template('profile.html'))
+    else: #if GET
+        return render_template('profile.html', title='Create a profile')
 
-        except Exception as err:
-            flash('form submission error'+str(err))
-            return redirect( url_for('index') )
-
-@app.route('/formecho/', methods=['GET','POST'])
-def formecho():
-    if request.method == 'GET':
-        return render_template('form_data.html',
-                               method=request.method,
-                               form_data=request.args)
-    elif request.method == 'POST':
-        return render_template('form_data.html',
-                               method=request.method,
-                               form_data=request.form)
-    else:
-        return render_template('form_data.html',
-                               method=request.method,
-                               form_data={})
-
-@app.route('/testform/')
-def testform():
-    return render_template('testform.html')
-
+@app.route('/person_temp/<username>', methods=['GET'])
+def person_temp(username):
+    conn = dbi.connect()
+    info = database.lookup(conn, username)
+    name = info['name']
+    password = info['password']
+    email = info['email']
+    return render_template('person.html', title='Person', name = name, password = password, username =username, email = email )
 
 if __name__ == '__main__':
     import sys, os

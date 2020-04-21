@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<head>
+<h1>Create your worker profile</h1>
+</head>
+<body>
+    <form method=POST action="">
+        <table>
+            <tr>
+                <td><label>Name: <input type="text" name="name"></label></td>
+            </tr>
+            <tr>
+                <td><label>Username: <input type="text" name="username"></label></td>
+            </tr>
+            <tr>
+                <td><label>Password: <input type="text" name="password"></label></td>
+            </tr>
+            <tr>
+                <td><label>Email (include everything before @wellesley.edu): <input type="text" name="email"></label></td>
+            </tr>
+        </table>
+        <input type="submit" name="submit-btn" value="Submit">
+    </form>
+</body>
+
+{% endblock %}
