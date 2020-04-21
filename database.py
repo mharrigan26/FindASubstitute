@@ -18,7 +18,7 @@ def usernameAvailability(conn, username):
 
 def emailAvailability(conn, email):
     curs = dbi.dict_cursor(conn)
-    sql = 'select * from employee where email = %s'
+    sql = 'select * from employee1 where email = %s'
     vals = [email]
     curs.execute(sql, vals)
     available = curs.fetchall()
@@ -29,15 +29,31 @@ def emailAvailability(conn, email):
 
 def insertEmployee(conn, name, username, email, password):
     curs = dbi.dict_cursor(conn)
-    sql = 'insert into employee(name, username, email, password) VALUES(%s, %s, %s, %s)'
+    sql = 'insert into employee1(name, username, email, password) VALUES(%s, %s, %s, %s)'
     vals = [name, username, email, password]
     curs.execute(sql, vals)
     conn.commit()
 
-def lookup(conn, username):
+def lookupEmployee(conn, username):
     curs = dbi.dict_cursor(conn)
-    sql = 'select * from employee where username = %s'
+    sql = 'select * from employee1 where username = %s'
     vals = [username]
+    curs.execute(sql, vals)
+    info = curs.fetchone()
+    return info
+
+def available(conn):
+    curs = dbi.dict_cursor(conn)
+    sql = 'select * from coverage where covered = %s'
+    vals = [0]
+    curs.execute(sql, vals)
+    info = curs.fetchall()
+    return info
+
+def lookupShift(conn, shift_id):
+    curs = dbi.dict_cursor(conn)
+    sql = 'select * from shift1 where shift_id = %s'
+    vals = [shift_id]
     curs.execute(sql, vals)
     info = curs.fetchone()
     return info

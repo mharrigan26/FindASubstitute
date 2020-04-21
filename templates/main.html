@@ -1,8 +1,41 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-<h1>Hello!</h1>
 
-<p>This is the soon to be created home page</p>
+<h1>Welcome to Wellesley's Find A Substitute</h1>
+
+<p>Please login or join, using one of the forms below:</p>    
+
+<form id="joinform" action="{{url_for('join')}}" method="post">
+    <h2>Join</h2>
+    <p><label><input type="text" name="name" required pattern="^\w+$"> Name</label></p>
+    <p><label><input type="text" name="email" required pattern="^\w+$"> Email (before the @)</label></p>
+    <p><label><input type="text" name="username" required pattern="^\w+$"> Username</label></p>
+    <p><label><input type="password" name="password1" required> Password </label></p>
+    <p><label><input type="password" name="password2" required> Password again </label></p>
+    <p><button type="submit">Submit</button></p>
+</form>
+    
+<form id="loginform" action="{{url_for('login')}}" method="post">
+    <h2>Login</h2>
+    <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
+    <p><label>Password: <input type="password" name="password" required></label></p>
+    <p><button type="submit">Submit</button></p>
+</form>
+{% endblock %}
+    
+
+{% block jquery_scripts %}
+<script>
+$("#joinform").on('submit', function (event) {
+     var pw1 = $(this).find('[name=password1]').val();
+     var pw2 = $(this).find('[name=password2]').val();
+     // should also check for length and common words etc
+     if( pw1 != pw2 ) {
+         // something more sophisticated than alert would be nice
+         alert("passwords don't match");
+     }
+});
+</script>
 
 {% endblock %}

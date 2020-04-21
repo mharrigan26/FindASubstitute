@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<head>
+<h1>Available shifts seeking coverage</h1>
+</head>
+<body>
+    <p>
+        <ol>
+            {% for shift in shifts %}
+            <li>
+            <!-- put a form inside this for look to grab each shift, label for each shift_id -->
+            <p>Request number: {{shift['request_id']}}</p> 
+            <p>Request made by: {{shift['req_employee']}}@wellesley.edu</p> 
+            <p>Shift ID number: {{shift['shift']}}</p> 
+            
+            </li>
+            {% endfor %}
+        </ol>
+    </p>
+</body>
+
+{% endblock %}
