@@ -2,7 +2,7 @@
 <html lang='en'>
 <head>
     <meta charset='utf-8'>
-    <meta name=author content="">
+    <meta name=author content="Bianca Pio">
     <title>{{ page_title }}</title>
     <link rel='stylesheet' href="{{url_for('static', filename = 'style.css')}}">
     {% block head_stuff %} {% endblock %}
@@ -18,7 +18,18 @@
         </div>
     {% endif %}
 {% endwith %}
-            
+
+{% block nav %}
+<div id="navigation">
+    <ul>
+        <li><a href="/">Home</a>
+        <li><a href="/logout/">Logout</a> 
+        <li><a href="/shifts/">Find shifts</a></li>
+        
+    </ul>        
+</div>
+{% endblock %}
+
 {% block main_content %}
 <h1>Welcome!</h1>
 {% endblock %}
