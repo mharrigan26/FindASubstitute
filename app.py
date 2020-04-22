@@ -9,6 +9,7 @@ import cs304dbi as dbi
 # import cs304dbi_sqlite3 as dbi
 
 import random
+import helper
 
 app.secret_key = 'your secret here'
 # replace that with a random key
@@ -60,6 +61,28 @@ def testform():
     return render_template('testform.html')
 
 
+@app.route('/inputSchedule/', methods=["GET", "POST"])
+def inputSchedule():
+    employee_ID = request.form.get('employee')
+    submit = request.form.get('submit')
+    day = request.form.get('day')
+    time = str(request.form.get('time'))
+    permanent = 1
+    if submit == "process form":
+        conn = dbi.connect()
+        print(employee_ID)
+        exists = helper.shiftExists(conn,permanent,day,time,employee_ID)
+        if exists == True:
+            flash('This shift already exists!')
+        else:
+            conn = dbi.connect()
+            data = helper.insertShift(conn,permanent,day,time,employee_ID)
+
+    conn = dbi.connect()
+    data = helper.getAllEmployees(conn)
+    return render_template('inputSchedule.html', list = data)
+
+
 if __name__ == '__main__':
     import sys, os
     if len(sys.argv) > 1:
@@ -70,13 +93,13 @@ if __name__ == '__main__':
         port = os.getuid()
     # the following database code works for both PyMySQL and SQLite3
     dbi.cache_cnf()
-    dbi.use('wmdb')
+    dbi.use('findasubstitute_db')
     conn = dbi.connect()
     curs = dbi.dict_cursor(conn)
     # the following query works for both MySQL and SQLite
     curs.execute('select current_timestamp as ct')
     row = curs.fetchone()
     ct = row['ct']
-    print('connected to WMDB at {}'.format(ct))
+    print('connected to findasubstitute_db at {}'.format(ct))
     app.debug = True
     app.run('0.0.0.0',port)
