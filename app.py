@@ -126,7 +126,7 @@ def shifts():
     if request.method == 'GET':
         conn = dbi.connect()
         info = database.available(conn)
-        print(info)
+        #print(info)
         return render_template('available_shifts.html', title='Available Shifts', shifts=info, conn=conn)
 
 @app.route('/grabShift/', methods=['POST'])
