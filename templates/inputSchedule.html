@@ -2,7 +2,7 @@
 
 {% block main_content %}
 <form method="post" action="{{url_for('inputSchedule')}}">
-  <p><label> Day of the Week
+  <p><label> Employee
       <select required name="employee">
         {%for item in list%}
           <option value="{{item['username']}}" >{{item['username']}}</option>
