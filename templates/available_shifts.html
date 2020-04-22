@@ -9,11 +9,13 @@
         <ol>
             {% for shift in shifts %}
             <li>
-            <!-- put a form inside this for look to grab each shift, label for each shift_id -->
             <p>Request number: {{shift['request_id']}}</p> 
             <p>Request made by: {{shift['req_employee']}}@wellesley.edu</p> 
-            <p>Shift ID number: {{shift['shift']}}</p> 
-            
+            <p>Time: {{shift['day']}} {{shift['time']}}</p> 
+            <form action="{{url_for('grabShift')}}" method="post">
+                <input type="hidden" name="shiftid" value="{{shift['shift']}}">
+                <input type="submit" value="grab this shift">
+                </form>
             </li>
             {% endfor %}
         </ol>

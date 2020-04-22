@@ -96,9 +96,7 @@ def user(username):
             session['visits'] = 1+int(session['visits'])
             return render_template('greet.html',
                                    page_title='My App: Welcome {}'.format(username),
-                                   name=username,
-                                   visits=session['visits'])
-
+                                   name=username)
         else:
             flash('you are not logged in. Please login or join')
             return redirect( url_for('index') )
@@ -127,13 +125,14 @@ def shifts():
     if request.method == 'GET':
         conn = dbi.connect()
         info = database.available(conn)
-        #change ^ to get all the information 
+        print(info)
         return render_template('available_shifts.html', title='Available Shifts', shifts=info, conn=conn)
 
-@app.route('/shifts/<shift_id>', methods=['GET'])
-def shift(shift_id):
-    if request.method == 'GET':
-        return render_template('shift.html', shift_id=shift_id)
+@app.route('/grabShift/', methods=['POST'])
+def grabShift():
+    conn = dbi.connect()
+    #write shift switching here, update statements and such
+    #redirect back to shifts page
 
 if __name__ == '__main__':
     import sys, os
