@@ -132,9 +132,21 @@ def shifts():
 @app.route('/grabShift/', methods=['POST'])
 def grabShift():
     conn = dbi.connect()
-    #write shift switching here, update statements and such
-    #redirect back to shifts page
-
+    shift = request.form.get('shiftid')
+    try:
+        if 'username' in session:
+            username = session['username']
+            data = database.changeOwnershipCovered(conn,shift,username)
+            flash(str("Shift Grabbed by " + username))
+            return redirect( url_for('shifts') )
+        else:
+            flash('you are not logged in. Please login or join to grab shifts')
+            return redirect( url_for('index') )
+    except Exception as err:
+        flash('some kind of error '+str(err))
+        return redirect( url_for('index') )
+    
+    
 @app.route('/inputSchedule/', methods=["GET", "POST"])
 def inputSchedule():
     employee_ID = request.form.get('employee')

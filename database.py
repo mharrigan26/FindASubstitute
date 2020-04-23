@@ -58,3 +58,9 @@ def lookupShift(conn, shift_id):
     info = curs.fetchone()
     return info
 
+def changeOwnershipCovered(conn,shift,coverEmployee):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''Update coverage SET covered = 1, cover_employee = %s where shift = %s''',(coverEmployee, shift))
+    curs.execute('''Update shift1 SET permanent = 0, employee = %s where shift_id = %s''',(coverEmployee,shift))
+    conn.commit()
+
