@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<form method="post" action="{{url_for('input_availability')}}">
+  <p><label> Employee
+      <select required name="employee">
+        {%for item in list%}
+          <option value="{{item['username']}}" >{{item['username']}}</option>
+        {%endfor%}
+      </select>
+    </label></p>
+
+      <p>Shift Availability:</p>
+      <p>Please refer to the master schedule and input a shift that you are not 
+          scheuled for, but are willing and able to cover if needed.
+      </p>
+    
+    <p><label> Day of the Week
+            <select required name="day">
+                <option value="">choose</option>
+                <option value= "Monday">Monday</option>
+                <option value= "Tuesday">Tuesday</option>
+                <option value= "Wednesday">Wednesday</option>
+                <option value= "Thursday">Thursday</option>
+                <option value= "Friday">Friday</option>
+                <option value= "Saturday">Saturday</option>
+                <option value= "Sunday">Sunday</option>
+            </select>
+        
+    </label></p>
+    
+    <p><label> Time of Day
+        <input type ="time" required name = "time">
+
+    </label></p>
+    <p><input type="submit" required name = "submit" value="process form">
+    </form>
+
+    {% endblock %}
