@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block main_content %}
+<h1>Input your Availability</h1>
 <form method="post" action="{{url_for('input_availability')}}">
   <p><label> Employee
       <select required name="employee">
@@ -11,7 +12,7 @@
     </label></p>
 
       <p>Shift Availability:</p>
-      <p>Please refer to the master schedule and input a shift that you are not 
+      <p>Please refer to the master schedule and request a shift that you are 
           scheuled for, but are willing and able to cover if needed.
       </p>
     

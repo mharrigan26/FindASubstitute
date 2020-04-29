@@ -168,6 +168,28 @@ def inputSchedule():
     data = helper.getAllEmployees(conn)
     return render_template('inputSchedule.html', list = data)
 
+@app.route('/input_availability/', methods=["GET", "POST"])
+def input_availability():
+    employee_ID = request.form.get('employee')
+    submit = request.form.get('submit')
+    day = request.form.get('day')
+    time = str(request.form.get('time'))
+    #need to add in code to insert data into a table, see Alexandra's code as example
+    conn = dbi.connect()
+    data = helper.getAllEmployees(conn)
+
+    return render_template('input_availability.html', list=data)
+
+@app.route('/request_coverage/', methods=["GET", "POST"])
+def request_coverage():
+    employee_ID = request.form.get('employee')
+    submit = request.form.get('submit')
+    day = request.form.get('day')
+    time = str(request.form.get('time'))
+    #need to add in code to insert data into a table, see Alexandra's code as example
+    conn = dbi.connect()
+    data = helper.getAllEmployees(conn)
+    return render_template('request_coverage.html', list=data)
 
 if __name__ == '__main__':
     import sys, os
