@@ -25,8 +25,15 @@
     <p><button type="submit">Submit</button></p>
 </form>
     
-<form id="loginform" action="{{url_for('login')}}" method="post">
-    <h2>Login</h2>
+<form id="loginformE" action="{{url_for('loginE')}}" method="post">
+    <h2>Employee Login</h2>
+    <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
+    <p><label>Password: <input type="password" name="password" required></label></p>
+    <p><button type="submit">Submit</button></p>
+</form>
+
+<form id="loginformA" action="{{url_for('loginA')}}" method="post">
+    <h2>Administrator Login</h2>
     <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
     <p><label>Password: <input type="password" name="password" required></label></p>
     <p><button type="submit">Submit</button></p>

@@ -55,8 +55,8 @@ def join():
         flash('form submission error '+str(err))
         return redirect( url_for('index') )
         
-@app.route('/login/', methods=["POST"])
-def login():
+@app.route('/loginE/', methods=["POST"])
+def loginE():
     try:
         username = request.form['username']
         passwd = request.form['password']
@@ -64,6 +64,39 @@ def login():
         curs = dbi.dict_cursor(conn)
         curs.execute('''SELECT username,password
                       FROM employee1
+                      WHERE username = %s''',
+                     [username])
+        row = curs.fetchone()
+        if row is None:
+            # Same response as wrong password,
+            # so no information about what went wrong
+            flash('login incorrect. Try again or join')
+            return redirect( url_for('index'))
+        hashed = row['password']
+        hashed2 = bcrypt.hashpw(passwd.encode('utf-8'),hashed.encode('utf-8'))
+        hashed2_str = hashed2.decode('utf-8')
+        if hashed2_str == hashed:
+            flash('successfully logged in as '+username)
+            session['username'] = username
+            session['logged_in'] = True
+            session['visits'] = 1
+            return redirect( url_for('user', username=username) )
+        else:
+            flash('login incorrect. Try again or join')
+            return redirect( url_for('index'))
+    except Exception as err:
+        flash('form submission error '+str(err))
+        return redirect( url_for('index') )
+
+@app.route('/loginA/', methods=["POST"])
+def loginA():
+    try:
+        username = request.form['username']
+        passwd = request.form['password']
+        conn = dbi.connect()
+        curs = dbi.dict_cursor(conn)
+        curs.execute('''SELECT username,password
+                      FROM admin
                       WHERE username = %s''',
                      [username])
         row = curs.fetchone()
