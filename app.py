@@ -9,6 +9,10 @@ import helper
 import os
 import bcrypt
 
+# for file upload
+app.config['UPLOADS'] = 'uploads'
+app.config['MAX_CONTENT_LENGTH'] = 1*1024*1024 # 1 MB
+
 
 app.secret_key = 'raaaaandom'
 # replace that with a random key
@@ -23,6 +27,51 @@ app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 @app.route('/')
 def index():
     return render_template('main.html',title='Find A Substitute')
+
+#this is ***only for employee's*** updating their own employee profiles
+@app.route('/profile/', methods=["GET", "POST"])
+def profile():
+    conn = dbi.connect()
+    if request.method == 'GET':
+        username1 = session['username']
+        info = database.lookupEmployee(conn, username1)
+        name = info['name']
+        return render_template('profile.html', name=name, username=username1, title='User Profile')
+    if request.method == 'POST':
+        username1 = session['username']
+        new_username = request.form['new_username']
+        new_name = request.form['name']
+        print(new_name, new_username)
+        #update the database with the new information
+        database.updateEmployeeProfile(conn, username1, new_username, new_name)
+        flash('profile updated')
+        return redirect(url_for('profile'))
+
+#reference code for file upload
+""" if request.method == 'GET':
+        return render_template('form.html',src='',nm='')
+    else:
+        try:
+            nm = int(request.form['nm']) # may throw error
+            f = request.files['pic']
+            user_filename = f.filename
+            ext = user_filename.split('.')[-1]
+            filename = secure_filename('{}.{}'.format(nm,ext))
+            pathname = os.path.join(app.config['UPLOADS'],filename)
+            f.save(pathname)
+            conn = dbi.connect()
+            curs = dbi.dict_cursor(conn)
+            curs.execute(
+                '''insert into picfile(nm,filename) values (%s,%s)
+                   on duplicate key update filename = %s''',
+                [nm, filename, filename])
+            conn.commit()
+            flash('Upload successful')
+            return render_template('form.html',
+                                   src=url_for('pic',nm=nm),
+                                   nm=nm) """
+
+    
 
 @app.route('/join/', methods=["POST"])
 def join():
@@ -154,15 +203,14 @@ def logout():
         flash('some kind of error '+str(err))
         return redirect( url_for('index') )
 
-@app.route('/shifts/', methods=['GET', 'POST'])
+@app.route('/shifts/', methods=['GET'])
 def shifts():
     if request.method == 'GET':
         conn = dbi.connect()
         info = database.available(conn)
-        #print(info)
         return render_template('available_shifts.html', title='Available Shifts', shifts=info, conn=conn)
 
-@app.route('/grabShift/', methods=['POST'])
+@app.route('/grabShift/', methods=["GET",'POST'])
 def grabShift():
     conn = dbi.connect()
     shift = request.form.get('shiftid')
@@ -180,7 +228,7 @@ def grabShift():
         return redirect( url_for('index') )
     
     
-@app.route('/inputSchedule/', methods=["GET", "POST"])
+@app.route('/inputSchedule/', methods=["GET","POST"])
 def inputSchedule():
     employee_ID = request.form.get('employee')
     submit = request.form.get('submit')
@@ -189,7 +237,7 @@ def inputSchedule():
     permanent = 1
     if submit == "process form":
         conn = dbi.connect()
-        print(employee_ID)
+        #print(employee_ID)
         exists = helper.shiftExists(conn,permanent,day,time,employee_ID)
         if exists == True:
             flash('This shift already exists!')
@@ -201,7 +249,7 @@ def inputSchedule():
     data = helper.getAllEmployees(conn)
     return render_template('inputSchedule.html', list = data)
 
-@app.route('/input_availability/', methods=["GET", "POST"])
+@app.route('/input_availability/', methods=["GET","POST"])
 def input_availability():
     employee_ID = request.form.get('employee')
     submit = request.form.get('submit')
@@ -213,7 +261,7 @@ def input_availability():
 
     return render_template('input_availability.html', list=data)
 
-@app.route('/request_coverage/', methods=["GET", "POST"])
+@app.route('/request_coverage/', methods=["GET","POST"])
 def request_coverage():
     employee_ID = request.form.get('employee')
     submit = request.form.get('submit')

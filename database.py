@@ -64,3 +64,8 @@ def changeOwnershipCovered(conn,shift,coverEmployee):
     curs.execute('''Update shift1 SET permanent = 0, employee = %s where shift_id = %s''',(coverEmployee,shift))
     conn.commit()
 
+def updateEmployeeProfile(conn, username1, username, name):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''UPDATE employee1 SET username = %s, name = %s WHERE username = %s''',
+                    [username, name, username1])
+    conn.commit()

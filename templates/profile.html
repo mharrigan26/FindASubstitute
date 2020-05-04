@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block main_content %}
+<h1>Update your Profile</h1>
+<form id="update_profile" action="{{url_for('profile')}}" method="post">
+    <p>Username: {{username}}</p>
+    <p>Name: {{name}}</p>
+    <p><button type="submit">Submit</button></p>
+</form>
+{% endblock %}
