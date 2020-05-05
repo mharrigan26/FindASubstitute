@@ -26,9 +26,40 @@ app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
 @app.route('/')
 def index():
-    return render_template('main.html',title='Find A Substitute')
+    try:
+        if 'username' in session:
+            username = session['username']
+            #session['visits'] = 1+int(session['visits'])
+            return render_template('greet.html',
+                                   page_title='Find A Substitute: Welcome {}'.format(username),
+                                   name=username)
+        else:
+            flash('you are not logged in. Please login or join')
+            return render_template('main.html',title='Find A Substitute')
+    except Exception as err:
+        flash('some kind of error '+str(err))
+        return render_template('main.html',title='Find A Substitute')
+    
 
-#this is ***only for employee's*** updating their own employee profiles
+#route for current welcome / home page
+@app.route('/user/<username>')
+def user(username):
+    try:
+        # don't trust the URL; it's only there for decoration
+        if 'username' in session:
+            username = session['username']
+            session['visits'] = 1+int(session['visits'])
+            return render_template('greet.html',
+                                   page_title='My App: Welcome {}'.format(username),
+                                   name=username)
+        else:
+            flash('you are not logged in. Please login or join')
+            return redirect( url_for('index') )
+    except Exception as err:
+        flash('some kind of error '+str(err))
+        return redirect( url_for('index') )
+
+#page for employee's to view and update their worker profile
 @app.route('/profile/', methods=["GET", "POST"])
 def profile():
     conn = dbi.connect()
@@ -41,8 +72,6 @@ def profile():
         username1 = session['username']
         new_username = request.form['new_username']
         new_name = request.form['name']
-        print(new_name, new_username)
-        #update the database with the new information
         database.updateEmployeeProfile(conn, username1, new_username, new_name)
         flash('profile updated')
         return redirect(url_for('profile'))
@@ -72,7 +101,7 @@ def profile():
                                    nm=nm) """
 
     
-
+#route for joining find a substitute
 @app.route('/join/', methods=["POST"])
 def join():
     try:
@@ -103,7 +132,8 @@ def join():
     except Exception as err:
         flash('form submission error '+str(err))
         return redirect( url_for('index') )
-        
+
+#route for employee log in        
 @app.route('/loginE/', methods=["POST"])
 def loginE():
     try:
@@ -137,6 +167,7 @@ def loginE():
         flash('form submission error '+str(err))
         return redirect( url_for('index') )
 
+#route for administrator log in
 @app.route('/loginA/', methods=["POST"])
 def loginA():
     try:
@@ -170,23 +201,9 @@ def loginA():
         flash('form submission error '+str(err))
         return redirect( url_for('index') )
 
-@app.route('/user/<username>')
-def user(username):
-    try:
-        # don't trust the URL; it's only there for decoration
-        if 'username' in session:
-            username = session['username']
-            session['visits'] = 1+int(session['visits'])
-            return render_template('greet.html',
-                                   page_title='My App: Welcome {}'.format(username),
-                                   name=username)
-        else:
-            flash('you are not logged in. Please login or join')
-            return redirect( url_for('index') )
-    except Exception as err:
-        flash('some kind of error '+str(err))
-        return redirect( url_for('index') )
 
+
+#log out route
 @app.route('/logout/')
 def logout():
     try:
@@ -279,6 +296,7 @@ if __name__ == '__main__':
         port = int(sys.argv[1])
         assert(port>1024)
     else:
+        #port = 7907 #Bianca's port
         port = os.getuid()
     # the following database code works for both PyMySQL and SQLite3
     dbi.cache_cnf()
