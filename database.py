@@ -50,6 +50,12 @@ def available(conn):
     info = curs.fetchall()
     return info
 
+def findAllAvailabilities(conn):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from person_availability order by day asc, time asc''')
+    info = curs.fetchall()
+    return info
+
 def lookupShift(conn, shift_id):
     curs = dbi.dict_cursor(conn)
     sql = 'select * from shift1 where shift_id = %s'
@@ -57,6 +63,16 @@ def lookupShift(conn, shift_id):
     curs.execute(sql, vals)
     info = curs.fetchone()
     return info
+
+def deleteEmployee(conn,employee_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''Update shift1 SET employee = NULL where employee = %s''', [employee_id])
+    curs.execute('''Update coverage SET covered = 0, cover_employee = NULL where cover_employee = %s ''', [employee_id])
+    curs.execute('''Update coverage SET covered = 0, req_employee = NULL where req_employee = %s ''', [employee_id])
+    curs.execute('''delete from employee1 where username = %s''', [employee_id])
+    info = curs.fetchall()
+    conn.commit()
+    
 
 def changeOwnershipCovered(conn,shift,coverEmployee):
     curs = dbi.dict_cursor(conn)

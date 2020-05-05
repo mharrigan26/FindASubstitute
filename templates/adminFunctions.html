@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<h1>Administration</h1>
+<form method="post" action="{{url_for('adminfunctions')}}">
+  <p><label> Employee
+      <select required name="employee">
+        {%for item in list%}
+          <option value="{{item['username']}}" >{{item['username']}}</option>
+        {%endfor%}
+      </select>
+    </label></p>
+
+    <p><input type="submit" required name = "submit" value="delete">
+    </form>
+
+    
+    <h1>Shifts that currently need coverage</h1>
+        <body>
+            <p>
+                <ol>
+                    {% for shift in shifts %}
+                    <li>
+                    <p>Request number: {{shift['request_id']}}</p> 
+                    <p>Request made by: {{shift['req_employee']}}@wellesley.edu</p> 
+                    <p>Time: {{shift['day']}} {{shift['time']}}</p> 
+                    </li>
+                    {% endfor %}
+                </ol>
+            </p>
+        </body>
+
+        <h1>Employee's Availabilities</h1>
+        <body>
+            <p>
+                <ol>
+                    {% for shift in availabilities %}
+                    <li>
+                    <p>Employee: {{shift['employee']}}@wellesley.edu</p> 
+                    <p>Time: {{shift['day']}} {{shift['time']}}</p> 
+                    </li>
+                    {% endfor %}
+                </ol>
+            </p>
+        </body>
+
+    {% endblock %}
