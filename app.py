@@ -67,39 +67,21 @@ def profile():
         username1 = session['username']
         info = database.lookupEmployee(conn, username1)
         name = info['name']
-        return render_template('profile.html', name=name, username=username1, title='User Profile')
+        pronouns = info['pronouns']
+        return render_template('profile.html', name=name, 
+        username=username1, pronouns=pronouns, title='User Profile')
     if request.method == 'POST':
         username1 = session['username']
-        new_username = request.form['new_username']
-        new_name = request.form['name']
-        database.updateEmployeeProfile(conn, username1, new_username, new_name)
+        print(username1)
+        pronouns = request.form.get("pronouns")
+        print(pronouns)
+        if(pronouns == "other"):
+            pronouns = request.form.get("other_pronouns")
+            print("these are the other pronouns if they exist")
+            print(pronouns)
+        database.updateEmployeeProfile(conn, pronouns, username1)
         flash('profile updated')
         return redirect(url_for('profile'))
-
-#reference code for file upload
-""" if request.method == 'GET':
-        return render_template('form.html',src='',nm='')
-    else:
-        try:
-            nm = int(request.form['nm']) # may throw error
-            f = request.files['pic']
-            user_filename = f.filename
-            ext = user_filename.split('.')[-1]
-            filename = secure_filename('{}.{}'.format(nm,ext))
-            pathname = os.path.join(app.config['UPLOADS'],filename)
-            f.save(pathname)
-            conn = dbi.connect()
-            curs = dbi.dict_cursor(conn)
-            curs.execute(
-                '''insert into picfile(nm,filename) values (%s,%s)
-                   on duplicate key update filename = %s''',
-                [nm, filename, filename])
-            conn.commit()
-            flash('Upload successful')
-            return render_template('form.html',
-                                   src=url_for('pic',nm=nm),
-                                   nm=nm) """
-
     
 #route for joining find a substitute
 @app.route('/join/', methods=["POST"])
@@ -296,8 +278,8 @@ if __name__ == '__main__':
         port = int(sys.argv[1])
         assert(port>1024)
     else:
-        #port = 7907 #Bianca's port
-        port = os.getuid()
+        port = 7907 #Bianca's port
+        #port = os.getuid()
     # the following database code works for both PyMySQL and SQLite3
     dbi.cache_cnf()
     dbi.use('findasubstitute_db')
