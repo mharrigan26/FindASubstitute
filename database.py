@@ -44,7 +44,7 @@ def lookupEmployee(conn, username):
 
 def available(conn):
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select coverage.request_id, coverage.req_employee, shift1.time, shift1.day, coverage.shift 
+    curs.execute('''select coverage.request_id, coverage.req_employee, shift1.time, shift1.day, shift1.endtime, coverage.shift 
     from coverage, shift1 
     where coverage.shift = shift1.shift_id AND coverage.covered = 0''')
     info = curs.fetchall()
