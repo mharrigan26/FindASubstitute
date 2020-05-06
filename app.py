@@ -1,3 +1,4 @@
+
 from flask import (Flask, render_template, make_response, url_for, request,
                    redirect, flash, session, send_from_directory, jsonify)
 app = Flask(__name__)
@@ -227,7 +228,23 @@ def grabShift():
     except Exception as err:
         flash('some kind of error '+str(err))
         return redirect( url_for('index') )
+
+@app.route('/adminfunctions/', methods=["GET","POST"])
+def adminfunctions():
+    employee_ID = request.form.get('employee')
+    submit = request.form.get('submit')
+    if submit == 'delete':
+        conn = dbi.connect()
+        database.deleteEmployee(conn,employee_ID)
+        flash("Employee " + employee_ID + " deleted")
+    conn = dbi.connect()
+    data = helper.getAllEmployees(conn)
+    info = database.available(conn)
+    availablities = database.findAllAvailabilities(conn)
+    return render_template('inputSchedule.html', list = data, shifts = info, availablities= availablities )
     
+
+
     
 @app.route('/inputSchedule/', methods=["GET","POST"])
 def inputSchedule():
@@ -295,3 +312,4 @@ if __name__ == '__main__':
     print('connected to FindASubstitute at {}'.format(ct))
     app.debug = True
     app.run('0.0.0.0',port)
+
