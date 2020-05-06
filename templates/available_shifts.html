@@ -11,7 +11,7 @@
             <li>
             <p>Request number: {{shift['request_id']}}</p> 
             <p>Request made by: {{shift['req_employee']}}@wellesley.edu</p> 
-            <p>Time: {{shift['day']}} {{shift['time']}}</p> 
+            <p>Time: {{shift['day']}} {{shift['time']}} until {{shift['endtime']}}</p> 
             <form action="{{url_for('grabShift')}}" method="post">
                 <input type="hidden" name="shiftid" value="{{shift['shift']}}">
                 <input type="submit" value="grab this shift">
