@@ -56,6 +56,12 @@ def findAllAvailabilities(conn):
     info = curs.fetchall()
     return info
 
+def getAllShifts(conn):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from shift1 order by day asc, time asc''')
+    info = curs.fetchall()
+    return info
+
 def lookupShift(conn, shift_id):
     curs = dbi.dict_cursor(conn)
     sql = 'select * from shift1 where shift_id = %s'

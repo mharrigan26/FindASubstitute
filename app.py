@@ -241,7 +241,8 @@ def adminfunctions():
     data = helper.getAllEmployees(conn)
     info = database.available(conn)
     availablities = database.findAllAvailabilities(conn)
-    return render_template('inputSchedule.html', list = data, shifts = info, availablities= availablities )
+    master = database.getAllShifts(conn)
+    return render_template('adminFunctions.html', list = data, shifts = info, availablities= availablities,master = master )
     
 
 

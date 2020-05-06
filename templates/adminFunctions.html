@@ -44,4 +44,17 @@
             </p>
         </body>
 
+        <h1>All Shifts</h1>
+        <body>
+            <p>
+                <ol>
+                    {% for shift in master %}
+                    <li>
+                    <p>Employee: {{shift['employee']}}@wellesley.edu</p> 
+                    <p>Time: {{shift['day']}} {{shift['time']}}</p> 
+                    </li>
+                    {% endfor %}
+                </ol>
+            </p>
+        </body>
     {% endblock %}
