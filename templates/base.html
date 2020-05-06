@@ -22,15 +22,14 @@
 {% block nav %}
 <div id="navigation">
     <ul>
-        <!-- need to change home for when logged in to not go back to the log in page -->
-        <li><a href="/">Home</a> 
-        <li><a href="/shifts/">Find Shifts</a></li>
-        <li><a href="/inputSchedule/">Input Schedule</a></li>
-        <li><a href="/input_availability/">Input Availbilty</a></li>
-        <li><a href="/request_coverage/">Request Coverage</a></li>
-        <li><a href="/profile/">Profile</a> 
-        <li><a href="/logout/">Logout</a> 
-
+        <li><a href="{{url_for('index')}}">Home</a> 
+        <li><a href="{{url_for('shifts')}}">Find Shifts</a></li>
+        <li><a href="{{url_for('inputSchedule')}}">Input Schedule</a></li>
+        <li><a href="{{url_for('input_availability')}}">Input Availbilty</a></li>
+        <li><a href="{{url_for('request_coverage')}}">Request Coverage</a></li>
+        <li><a href="{{url_for('profile')}}">Profile</a> 
+        <li><a href="{{url_for('logout')}}">Logout</a> 
+            
     </ul>        
 </div>
 {% endblock %}
