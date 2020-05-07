@@ -229,6 +229,7 @@ def grabShift():
         flash('some kind of error '+str(err))
         return redirect( url_for('index') )
 
+#route for all admin functions page
 @app.route('/adminfunctions/', methods=["GET","POST"])
 def adminfunctions():
     employee_ID = request.form.get('employee')
@@ -246,7 +247,7 @@ def adminfunctions():
     
 
 
-    
+#input schedule
 @app.route('/inputSchedule/', methods=["GET","POST"])
 def inputSchedule():
     employee_ID = request.form.get('employee')
