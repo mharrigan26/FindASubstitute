@@ -285,14 +285,31 @@ def input_availability():
 #route to request coverage of a shift
 @app.route('/request_coverage/', methods=["GET","POST"])
 def request_coverage():
-    employee_ID = request.form.get('employee')
-    submit = request.form.get('submit')
-    day = request.form.get('day')
-    time = str(request.form.get('time'))
-    #need to add in code to insert data into a table, see Alexandra's code as example
     conn = dbi.connect()
-    data = helper.getAllEmployees(conn)
-    return render_template('request_results.html', list=data)
+
+    try:
+        if 'username' in session:
+            employee_ID = session['username']
+        else:
+            flash('you are not logged in. Please login or join to grab shifts')
+            return redirect( url_for('index') )
+    except Exception as err:
+        flash('some kind of error '+str(err))
+        return redirect( url_for('index') )
+
+
+    if request.method == 'GET':
+        data = helper.getAllEmployees(conn)
+        info = database.getSpecEmployeeShifts(conn, employee_ID)
+        length = len(info)
+        return render_template('request_coverage.html', shifts = info, length = length)
+    else:
+        shift = request.form.get('shiftid')
+        print (shift)
+        print(employee_ID)
+        database.requestCoverage(conn, employee_ID, shift)
+        flash('You have successfully requested coverage')
+        return render_template('request_coverage.html')
 
 if __name__ == '__main__':
     import sys, os

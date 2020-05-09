@@ -91,3 +91,14 @@ def updateEmployeeProfile(conn, pronouns, username):
     curs.execute('''UPDATE employee1 SET pronouns = %s WHERE username = %s''',
                     [pronouns, username])
     conn.commit()
+
+def getSpecEmployeeShifts(conn, employee_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from shift1 where employee = %s order by day asc, time asc, endtime''', [employee_id])
+    info = curs.fetchall()
+    return info
+
+def requestCoverage(conn, employee_id, shift_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into coverage(covered, req_employee, shift) values(%s, %s, %s)''', [0, employee_id, shift_id])
+    conn.commit()

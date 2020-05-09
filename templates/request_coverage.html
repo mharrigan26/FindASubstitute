@@ -2,38 +2,22 @@
 
 {% block main_content %}
 <h1>Request Coverage</h1>
-<p>*page under construction*</p>
-<form method="post" action="{{url_for('request_coverage')}}">
-  <p><label> Employee
-      <select required name="employee">
-        {%for item in list%}
-          <option value="{{item['username']}}" >{{item['username']}}</option>
-        {%endfor%}
-      </select>
-    </label></p>
 
-      <p>Please enter the information of the shift that you are requesting coverage
-          for.</p>
-    
-    <p><label> Day of the Week
-            <select required name="day">
-                <option value="">choose</option>
-                <option value= "Monday">Monday</option>
-                <option value= "Tuesday">Tuesday</option>
-                <option value= "Wednesday">Wednesday</option>
-                <option value= "Thursday">Thursday</option>
-                <option value= "Friday">Friday</option>
-                <option value= "Saturday">Saturday</option>
-                <option value= "Sunday">Sunday</option>
-            </select>
-        
-    </label></p>
-    
-    <p><label> Time of Day
-        <input type ="time" required name = "time">
 
-    </label></p>
-    <p><input type="submit" required name = "submit" value="process form">
-    </form>
-
-    {% endblock %}
+      <p>Please select the shift that you are requesting coverage for.</p>
+        <ol>
+          {% for shift in shifts %}
+          <li>
+          <p>Shift ID: {{shift['shift_id']}}</p> 
+          <p>Time: {{shift['day']}} {{shift['time']}} until {{shift['endtime']}}</p> 
+          <form action="{{url_for('request_coverage')}}" method="post">
+              <input type="hidden" name="shiftid" value="{{shift['shift_id']}}">
+              <input type="submit" value="select this shift">
+              </form>
+          </li>
+          {% endfor %}
+        </ol>
+        {% if length == 0:%}
+        <p>You have no shifts</p>
+        {% endif %}
+{% endblock %}
