@@ -205,6 +205,7 @@ def logout():
         flash('some kind of error '+str(err))
         return redirect( url_for('index') )
 
+#route for seeing all currently available shifts
 @app.route('/shifts/', methods=['GET'])
 def shifts():
     if request.method == 'GET':
@@ -212,6 +213,7 @@ def shifts():
         info = database.available(conn)
         return render_template('available_shifts.html', title='Available Shifts', shifts=info, conn=conn)
 
+#route to pick up a shift
 @app.route('/grabShift/', methods=["GET",'POST'])
 def grabShift():
     conn = dbi.connect()
@@ -245,9 +247,7 @@ def adminfunctions():
     master = database.getAllShifts(conn)
     return render_template('adminFunctions.html', list = data, shifts = info, availablities= availablities,master = master )
     
-
-
-#input schedule
+#input schedule route
 @app.route('/inputSchedule/', methods=["GET","POST"])
 def inputSchedule():
     employee_ID = request.form.get('employee')
@@ -269,6 +269,7 @@ def inputSchedule():
     data = helper.getAllEmployees(conn)
     return render_template('inputSchedule.html', list = data)
 
+#route to input shifts you are available for
 @app.route('/input_availability/', methods=["GET","POST"])
 def input_availability():
     employee_ID = request.form.get('employee')
@@ -281,6 +282,7 @@ def input_availability():
 
     return render_template('input_availability.html', list=data)
 
+#route to request coverage of a shift
 @app.route('/request_coverage/', methods=["GET","POST"])
 def request_coverage():
     employee_ID = request.form.get('employee')
@@ -290,7 +292,7 @@ def request_coverage():
     #need to add in code to insert data into a table, see Alexandra's code as example
     conn = dbi.connect()
     data = helper.getAllEmployees(conn)
-    return render_template('request_coverage.html', list=data)
+    return render_template('request_results.html', list=data)
 
 if __name__ == '__main__':
     import sys, os
