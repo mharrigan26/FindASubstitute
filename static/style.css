@@ -7,5 +7,13 @@
 
 h1 {
     font-size: 200%;
-    color: teal;
+    color: rgb(0, 0, 0);
+}
+
+body {
+    font-family: 'Geneva', sans-serif;
+    color: #674c6b;
+    background-color: #aedcfa;
+    margin: 20px 2em;
+    text-align: center;
 }
