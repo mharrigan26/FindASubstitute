@@ -75,13 +75,11 @@ def profile():
         username=username1, pronouns=pronouns, title='User Profile')
     if request.method == 'POST':
         username1 = session['username']
-        print(username1)
+        #print(username1)
         pronouns = request.form.get("pronouns")
-        print(pronouns)
+
         if(pronouns == "other"):
             pronouns = request.form.get("other_pronouns")
-            print("these are the other pronouns if they exist")
-            print(pronouns)
         database.updateEmployeeProfile(conn, pronouns, username1)
         flash('profile updated')
         return redirect(url_for('profile'))
