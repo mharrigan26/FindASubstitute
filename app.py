@@ -309,6 +309,26 @@ def request_coverage():
         flash('You have successfully requested coverage')
         return render_template('request_coverage.html')
 
+#route to search for the shifts of a specific person        
+@app.route('/search/', methods=["GET", "POST"])
+def search():
+    if request.method == "GET":
+        return render_template('search.html', title=Search by Employee)
+    else:
+        conn = dbi.connect()
+        if (request.form.get('employee-username') == ""):
+            flash('Please submit a non-empty form.')
+            return render_template('search.html', title=Search by Employee)
+        else:
+            username = request.form.get('employee-username')
+            info = database.getSpecEmployeeShifts(conn, username)
+            if (info != None):
+                shifts = info
+                return redirect(url_for('user_shifts', shifts=shifts))
+            else:
+                flash("Employee does not exist.")
+                return render_template('search.html')
+
 if __name__ == '__main__':
     import sys, os
     if len(sys.argv) > 1:
