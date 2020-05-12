@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<h1>All {{username}}'s Shifts</h1>
+        <body>
+            <p>
+                <ol>
+                    {% for shift in shifts %}
+                    <li>
+                    <p>{{shift['day']}} {{shift['time']}} to {{shift['endtime']}}</p> 
+                    </li>
+                    {% endfor %}
+                </ol>
+            </p>
+        </body>
+
+{% endblock %}

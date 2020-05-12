@@ -317,6 +317,16 @@ def request_coverage():
 #route to search for the shifts of a specific person        
 @app.route('/search/', methods=["GET", "POST"])
 def search():
+    try:
+        if 'username' in session:
+            employee_ID = session['username']
+        else:
+            flash('you are not logged in. Please login or join to grab shifts')
+            return redirect( url_for('index') )
+    except Exception as err:
+        flash('some kind of error '+str(err))
+        return redirect( url_for('index') )
+
     if request.method == "GET":
         return render_template('search.html', title="Search by Employee")
     else:
@@ -326,13 +336,28 @@ def search():
             return render_template('search.html', title="Search by Employee")
         else:
             username = request.form.get('employee-username')
-            info = database.getSpecEmployeeShifts(conn, username)
-            if (info != None):
-                shifts = info
-                return redirect(url_for('user_shifts', shifts=shifts))
+            existence = database.usernameAvailability(conn, username)
+            if existence:
+                return redirect(url_for('usershifts', username=username))
             else:
                 flash("Employee does not exist.")
                 return render_template('search.html')
+
+@app.route('/usershifts/<username>', methods=["GET"])
+def usershifts(username):
+    try:
+        if 'username' in session:
+            employee_ID = session['username']
+        else:
+            flash('you are not logged in')
+            return redirect( url_for('index') )
+    except Exception as err:
+        flash('some kind of error '+str(err))
+        return redirect( url_for('index') )
+
+    conn = dbi.connect()
+    info = database.getSpecEmployeeShifts(conn, username)
+    return render_template('user_shifts.html', shifts=info, username=username)
 
 if __name__ == '__main__':
     import sys, os
@@ -341,8 +366,8 @@ if __name__ == '__main__':
         port = int(sys.argv[1])
         assert(port>1024)
     else:
-        #port = 7907 #Bianca's port
-        port = os.getuid()
+        port = 7907 #Bianca's port
+        #port = os.getuid()
     # the following database code works for both PyMySQL and SQLite3
     dbi.cache_cnf()
     dbi.use('findasubstitute_db')
