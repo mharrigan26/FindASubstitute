@@ -1,4 +1,9 @@
-{% extends "base.html" %}
+{% if isAdmin%}
+    {% extends "baseAdmin.html" %}
+{%else%}
+    {% extends "base.html" %}
+{%endif%}
+
 
 {% block main_content %}
 

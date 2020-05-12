@@ -102,3 +102,9 @@ def requestCoverage(conn, employee_id, shift_id):
     curs = dbi.dict_cursor(conn)
     curs.execute('''insert into coverage(covered, req_employee, shift) values(%s, %s, %s)''', [0, employee_id, shift_id])
     conn.commit()
+
+def isAdmin(conn,employee_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from admin where username = %s''',[employee_id])
+    info = curs.fetchall()
+    return (len(info) == 1)
