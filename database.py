@@ -92,6 +92,12 @@ def updateEmployeeProfile(conn, pronouns, username):
                     [pronouns, username])
     conn.commit()
 
+def updateAdminProfile(conn, pronouns, username):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''UPDATE admin SET pronouns = %s WHERE username = %s''',
+                    [pronouns, username])
+    conn.commit()
+
 def getSpecEmployeeShifts(conn, employee_id):
     curs = dbi.dict_cursor(conn)
     curs.execute('''select * from shift1 where employee = %s order by day asc, time asc, endtime''', [employee_id])
@@ -108,3 +114,11 @@ def isAdmin(conn,employee_id):
     curs.execute('''select * from admin where username = %s''',[employee_id])
     info = curs.fetchall()
     return (len(info) == 1)
+
+def lookupAdmin(conn, username):
+    curs = dbi.dict_cursor(conn)
+    sql = 'select * from admin where username = %s'
+    vals = [username]
+    curs.execute(sql, vals)
+    info = curs.fetchone()
+    return info

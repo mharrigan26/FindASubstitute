@@ -1,6 +1,7 @@
 
 from flask import (Flask, render_template, make_response, url_for, request,
                    redirect, flash, session, send_from_directory, jsonify)
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 import cs304dbi as dbi
@@ -50,7 +51,6 @@ def index():
 @app.route('/user/<username>')
 def user(username):
     try:
-        # don't trust the URL; it's only there for decoration
         if 'username' in session:
             username = session['username']
             session['visits'] = 1+int(session['visits'])
@@ -69,26 +69,70 @@ def user(username):
 #page for employee's to view and update their worker profile
 @app.route('/profile/', methods=["GET", "POST"])
 def profile():
+    try:
+        if 'username' in session:
+            employee_ID = session['username']
+        else:
+            flash('you are not logged in. Please login or join to view your profile')
+            return redirect( url_for('index') )
+    except Exception as err:
+        flash('some kind of error '+str(err))
+        return redirect( url_for('index') )
     conn = dbi.connect()
     if request.method == 'GET':
         username1 = session['username']
-        info = database.lookupEmployee(conn, username1)
+        isAdmin = database.isAdmin(conn,username1)
+        #fix for admin inclusivity
+        if isAdmin:
+            info = database.lookupAdmin(conn,username1)
+        else:
+            info = database.lookupEmployee(conn, username1)
         name = info['name']
         pronouns = info['pronouns']
-        isAdmin = database.isAdmin(conn,username1)
+        print(info)
         return render_template('profile.html', name=name, 
-        username=username1, pronouns=pronouns, title='User Profile',isAdmin = isAdmin)
+        username=username1, pronouns=pronouns, title='User Profile',isAdmin = isAdmin, src='', nm='')
+    
     if request.method == 'POST':
         username1 = session['username']
-        #print(username1)
         pronouns = request.form.get("pronouns")
-
+        isAdmin = database.isAdmin(conn,username1)
         if(pronouns == "other"):
             pronouns = request.form.get("other_pronouns")
-        database.updateEmployeeProfile(conn, pronouns, username1)
+        if isAdmin:
+            database.updateAdminProfile(conn,pronouns,username1)
+        else:
+            database.updateEmployeeProfile(conn, pronouns, username1)
         flash('profile updated')
         return redirect(url_for('profile'))
-    
+
+@app.route('/upload/', methods=["POST"])
+def upload():
+    if request.method == 'POST': #if they are uploading a new picture
+        try:
+            #i think the problem is with picfile1 itself
+            print("inside uploader")
+            username2 = session['username']
+            f = request.files['pic']
+            user_filename = f.filename
+            print("path0")
+            ext = user_filename.split('.')[-1]
+            filename = secure_filename('{}.{}'.format(username2,ext))
+            pathname = os.path.join(app.config['UPLOADS'],filename)
+            f.save(pathname)
+            print("path1")
+            curs = dbi.dict_cursor(conn)
+            curs.execute(
+                '''insert into picfile1(username,filename) values (%s,%s)
+                on duplicate key update filename = %s''',
+                [username2, filename, filename])
+            conn.commit()
+            flash('Upload successful')
+            return redirect(url_for('profile'))
+        except Exception as err:
+            flash('Upload failed {why}'.format(why=err))
+            return render_template('profile.html',src='',nm='')
+
 #route for joining find a substitute
 @app.route('/join/', methods=["POST"])
 def join():
@@ -366,8 +410,8 @@ if __name__ == '__main__':
         port = int(sys.argv[1])
         assert(port>1024)
     else:
-        port = 7907 #Bianca's port
-        #port = os.getuid()
+        #port = 7907 #Bianca's port
+        port = os.getuid()
     # the following database code works for both PyMySQL and SQLite3
     dbi.cache_cnf()
     dbi.use('findasubstitute_db')

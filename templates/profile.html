@@ -19,4 +19,17 @@
     <input type="text" id="other_pronouns" name="other_pronouns"><br>
     <p><button type="submit">Submit changes</button></p>
 </form>
+
+    <p>Upload a profile picture:
+        <form method="post" action="{{url_for('upload')}}"  enctype = "multipart/form-data">
+        <p><label>Pic: <input type="file" name="pic"></label></p>
+        <p><input type="submit" value="upload"></p>
+    </form>
+
+    {% if username != '' and src != '' %}
+        <p>Last upload: {{username}}</p>
+        <p> <img src="{{src}}"></p>
+    {% endif %}
+
+
 {% endblock %}
