@@ -82,27 +82,19 @@ def profile():
     if request.method == 'GET':
         username1 = session['username']
         isAdmin = database.isAdmin(conn,username1)
-        #fix for admin inclusivity
-        if isAdmin:
-            info = database.lookupAdmin(conn,username1)
-        else:
-            info = database.lookupEmployee(conn, username1)
+        info = database.lookupEmployee(conn, username1)
         name = info['name']
         pronouns = info['pronouns']
-        print(info)
+        #print(info)
         return render_template('profile.html', name=name, 
         username=username1, pronouns=pronouns, title='User Profile',isAdmin = isAdmin, src='', nm='')
     
     if request.method == 'POST':
         username1 = session['username']
         pronouns = request.form.get("pronouns")
-        isAdmin = database.isAdmin(conn,username1)
         if(pronouns == "other"):
             pronouns = request.form.get("other_pronouns")
-        if isAdmin:
-            database.updateAdminProfile(conn,pronouns,username1)
-        else:
-            database.updateEmployeeProfile(conn, pronouns, username1)
+        database.updateEmployeeProfile(conn, pronouns, username1)
         flash('profile updated')
         return redirect(url_for('profile'))
 
@@ -110,17 +102,14 @@ def profile():
 def upload():
     if request.method == 'POST': #if they are uploading a new picture
         try:
-            #i think the problem is with picfile1 itself
-            print("inside uploader")
+            
             username2 = session['username']
             f = request.files['pic']
             user_filename = f.filename
-            print("path0")
             ext = user_filename.split('.')[-1]
             filename = secure_filename('{}.{}'.format(username2,ext))
             pathname = os.path.join(app.config['UPLOADS'],filename)
             f.save(pathname)
-            print("path1")
             curs = dbi.dict_cursor(conn)
             curs.execute(
                 '''insert into picfile1(username,filename) values (%s,%s)
@@ -319,15 +308,23 @@ def inputSchedule():
 #route to input shifts you are available for
 @app.route('/input_availability/', methods=["GET","POST"])
 def input_availability():
-    employee_ID = request.form.get('employee')
+    try:
+        if 'username' in session:
+            username = session['username']
+        else:
+            flash('you are not logged in. Please login or join to input availability')
+            return redirect( url_for('index') )
+    except Exception as err:
+        flash('some kind of error '+str(err))
+        return redirect( url_for('index') )
     submit = request.form.get('submit')
     day = request.form.get('day')
-    time = str(request.form.get('time'))
-    #need to add in code to insert data into a table, see Alexandra's code as example
+    start_time = str(request.form.get('start_time'))
+    end_time = str(request.form.get('end_time'))
     conn = dbi.connect()
-    data = helper.getAllEmployees(conn)
-
-    return render_template('input_availability.html', list=data)
+    database.insertAvailability(conn,username, start_time, end_time, day)
+    flash("availability updated")
+    return render_template('input_availability.html')
 
 #route to request coverage of a shift
 @app.route('/request_coverage/', methods=["GET","POST"])

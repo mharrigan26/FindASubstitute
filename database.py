@@ -122,3 +122,8 @@ def lookupAdmin(conn, username):
     curs.execute(sql, vals)
     info = curs.fetchone()
     return info
+
+def insertAvailability(conn,username, start_time, end_time, day):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into person_availability(employee, day, time, endtime) values(%s, %s, %s,%s)''', [username, day, start_time, end_time])
+    conn.commit()
