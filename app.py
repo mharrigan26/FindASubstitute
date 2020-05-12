@@ -317,14 +317,17 @@ def input_availability():
     except Exception as err:
         flash('some kind of error '+str(err))
         return redirect( url_for('index') )
-    submit = request.form.get('submit')
-    day = request.form.get('day')
-    start_time = str(request.form.get('start_time'))
-    end_time = str(request.form.get('end_time'))
-    conn = dbi.connect()
-    database.insertAvailability(conn,username, start_time, end_time, day)
-    flash("availability updated")
-    return render_template('input_availability.html')
+    if request.method == "POST":
+        submit = request.form.get('submit')
+        day = request.form.get('day')
+        start_time = str(request.form.get('start_time'))
+        end_time = str(request.form.get('end_time'))
+        conn = dbi.connect()
+        database.insertAvailability(conn,username, start_time, end_time, day)
+        flash("availability updated")
+        return render_template('input_availability.html')
+    else:
+        return render_template('input_availability.html')
 
 #route to request coverage of a shift
 @app.route('/request_coverage/', methods=["GET","POST"])
