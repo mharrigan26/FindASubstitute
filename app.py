@@ -33,9 +33,11 @@ def index():
         if 'username' in session:
             username = session['username']
             #session['visits'] = 1+int(session['visits'])
+            conn = dbi.connect()
+            isAdmin = database.isAdmin(conn,username)
             return render_template('greet.html',
                                    page_title='Find A Substitute: Welcome {}'.format(username),
-                                   name=username)
+                                   name=username, isAdmin = isAdmin)
         else:
             flash('you are not logged in. Please login or join')
             return render_template('main.html',title='Find A Substitute')
@@ -52,9 +54,11 @@ def user(username):
         if 'username' in session:
             username = session['username']
             session['visits'] = 1+int(session['visits'])
+            conn = dbi.connect()
+            isAdmin = database.isAdmin(conn,username)
             return render_template('greet.html',
                                    page_title='My App: Welcome {}'.format(username),
-                                   name=username)
+                                   name=username, isAdmin = isAdmin)
         else:
             flash('you are not logged in. Please login or join')
             return redirect( url_for('index') )
@@ -71,8 +75,9 @@ def profile():
         info = database.lookupEmployee(conn, username1)
         name = info['name']
         pronouns = info['pronouns']
+        isAdmin = database.isAdmin(conn,username1)
         return render_template('profile.html', name=name, 
-        username=username1, pronouns=pronouns, title='User Profile')
+        username=username1, pronouns=pronouns, title='User Profile',isAdmin = isAdmin)
     if request.method == 'POST':
         username1 = session['username']
         #print(username1)
