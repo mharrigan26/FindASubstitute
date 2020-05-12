@@ -318,12 +318,12 @@ def request_coverage():
 @app.route('/search/', methods=["GET", "POST"])
 def search():
     if request.method == "GET":
-        return render_template('search.html', title=Search by Employee)
+        return render_template('search.html', title="Search by Employee")
     else:
         conn = dbi.connect()
         if (request.form.get('employee-username') == ""):
             flash('Please submit a non-empty form.')
-            return render_template('search.html', title=Search by Employee)
+            return render_template('search.html', title="Search by Employee")
         else:
             username = request.form.get('employee-username')
             info = database.getSpecEmployeeShifts(conn, username)
