@@ -52,7 +52,7 @@ def available(conn):
 
 def findAllAvailabilities(conn):
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select * from person_availability order by day asc, time asc''')
+    curs.execute('''select * from person_availability order by day asc, time asc, endtime desc''')
     info = curs.fetchall()
     return info
 

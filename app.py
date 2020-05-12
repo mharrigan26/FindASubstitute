@@ -270,18 +270,32 @@ def grabShift():
 #route for all admin functions page
 @app.route('/adminfunctions/', methods=["GET","POST"])
 def adminfunctions():
-    employee_ID = request.form.get('employee')
-    submit = request.form.get('submit')
-    if submit == 'delete':
-        conn = dbi.connect()
-        database.deleteEmployee(conn,employee_ID)
-        flash("Employee " + employee_ID + " deleted")
-    conn = dbi.connect()
-    data = helper.getAllEmployees(conn)
-    info = database.available(conn)
-    availablities = database.findAllAvailabilities(conn)
-    master = database.getAllShifts(conn)
-    return render_template('adminFunctions.html', list = data, shifts = info, availablities= availablities,master = master )
+    try:
+        if 'username' in session:
+            if request.method == "GET":
+                conn = dbi.connect()
+                data = helper.getAllEmployees(conn)
+                info = database.available(conn)
+                availablities = database.findAllAvailabilities(conn)
+                master = database.getAllShifts(conn)
+                return render_template('adminFunctions.html', list = data, shifts = info, 
+                available= availablities,master = master )
+            if request.method == "POST":
+                employee_ID = request.form.get('employee')
+                submit = request.form.get('submit')
+                if submit == 'delete':
+                    conn = dbi.connect()
+                    database.deleteEmployee(conn,employee_ID)
+                    flash("Employee " + employee_ID + " deleted")
+                    return redirect(url_for('adminfunctions'))
+        else:
+            flash('you are not logged in. Please login or join to use admin functions')
+            return redirect( url_for('index') )
+    except Exception as err:
+        flash('some kind of error '+str(err))
+        return redirect( url_for('index') )
+    
+       
     
 #input schedule route
 @app.route('/inputSchedule/', methods=["GET","POST"])

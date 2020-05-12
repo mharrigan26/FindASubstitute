@@ -35,10 +35,10 @@
         <body>
             <p>
                 <ol>
-                    {% for shift in availabilities %}
+                    {% for shift in available %}
                     <li>
                     <p>Employee: {{shift['employee']}}@wellesley.edu</p> 
-                    <p>Time: {{shift['day']}} {{shift['time']}}</p> 
+                    <p>Time: {{shift['day']}} {{shift['time']}} {{shift['endtime']}}</p> 
                     </li>
                     {% endfor %}
                 </ol>
