@@ -26,10 +26,14 @@
         <p><input type="submit" value="upload"></p>
     </form>
 
-    {% if username != '' and src != '' %}
+    <!-- {% if username != '' and src != '' %}
         <p>Last upload: {{username}}</p>
         <p> <img src="{{src}}"></p>
-    {% endif %}
+    {% endif %} -->
 
+    <h1>Your profile picture</h1>
+    {% for pic in pics %}
+    <p><img src="{{url_for('pic',username=pic['username'])}}" alt="{{pic['name']}}"></p>
+    {% endfor %}
 
 {% endblock %}

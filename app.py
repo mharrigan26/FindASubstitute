@@ -1,6 +1,6 @@
 
 from flask import (Flask, render_template, make_response, url_for, request,
-                   redirect, flash, session, send_from_directory, jsonify)
+                   redirect, flash, session, send_from_directory, jsonify, Response)
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
@@ -66,6 +66,7 @@ def user(username):
         flash('some kind of error '+str(err))
         return redirect( url_for('index') )
 
+
 #page for employee's to view and update their worker profile
 @app.route('/profile/', methods=["GET", "POST"])
 def profile():
@@ -85,9 +86,11 @@ def profile():
         info = database.lookupEmployee(conn, username1)
         name = info['name']
         pronouns = info['pronouns']
-        #print(info)
+        curs.execute('''select username,name,filename
+                    from picfile1 inner join employee1 using (username)''')
+        pics = curs.fetchall()
         return render_template('profile.html', name=name, 
-        username=username1, pronouns=pronouns, title='User Profile',isAdmin = isAdmin, src='', nm='')
+        username=username1, pronouns=pronouns, title='User Profile',isAdmin = isAdmin, src='', nm='', pics=pics)
     
     if request.method == 'POST':
         username1 = session['username']
@@ -97,6 +100,19 @@ def profile():
         database.updateEmployeeProfile(conn, pronouns, username1)
         flash('profile updated')
         return redirect(url_for('profile'))
+
+@app.route('/pic/<username>')
+def pic(username):
+    conn = dbi.connect()
+    curs = dbi.dict_cursor(conn)
+    numrows = curs.execute(
+        '''select filename from picfile1 where username = %s''',
+        [username])
+    if numrows == 0:
+        flash('No picture for {}'.format(nm))
+        return redirect(url_for('index'))
+    row = curs.fetchone()
+    return send_from_directory(app.config['UPLOADS'],row['filename'])
 
 @app.route('/upload/', methods=["POST"])
 def upload():
@@ -121,6 +137,7 @@ def upload():
         except Exception as err:
             flash('Upload failed {why}'.format(why=err))
             return render_template('profile.html',src='',nm='')
+
 
 #route for joining find a substitute
 @app.route('/join/', methods=["POST"])
