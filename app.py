@@ -87,10 +87,10 @@ def profile():
         name = info['name']
         pronouns = info['pronouns']
         curs.execute('''select username,name,filename
-                    from picfile1 inner join employee1 using (username)''')
+                    from picfile1 inner join employee1 using (username) where username = %s''', [username1])
         pics = curs.fetchall()
         return render_template('profile.html', name=name, 
-        username=username1, pronouns=pronouns, title='User Profile',isAdmin = isAdmin, src='', nm='', pics=pics)
+        username=username1, pronouns=pronouns, title='User Profile',isAdmin = isAdmin, pics=pics)
     
     if request.method == 'POST':
         username1 = session['username']
@@ -103,11 +103,12 @@ def profile():
 
 @app.route('/pic/<username>')
 def pic(username):
+    username1 = session['username']
     conn = dbi.connect()
     curs = dbi.dict_cursor(conn)
     numrows = curs.execute(
         '''select filename from picfile1 where username = %s''',
-        [username])
+        [username1])
     if numrows == 0:
         flash('No picture for {}'.format(nm))
         return redirect(url_for('index'))
