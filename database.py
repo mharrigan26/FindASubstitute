@@ -1,3 +1,9 @@
+#FindASubstitute
+#Bianca Pio, Alexandra Bullen-Smith, Margaret Harrigan
+#CS 304 Final Project
+#Submitted May 13, 2020
+#data.py is the python file containing functions to navigate the database
+
 import database
 import cs304dbi as dbi
 

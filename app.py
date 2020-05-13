@@ -1,3 +1,8 @@
+#FindASubstitute
+#Bianca Pio, Alexandra Bullen-Smith, Margaret Harrigan
+#CS 304 Final Project
+#Submitted May 13, 2020
+#app.py is the python file that launches the website
 
 from flask import (Flask, render_template, make_response, url_for, request,
                    redirect, flash, session, send_from_directory, jsonify, Response)

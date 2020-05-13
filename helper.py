@@ -1,3 +1,10 @@
+#FindASubstitute
+#Bianca Pio, Alexandra Bullen-Smith, Margaret Harrigan
+#CS 304 Final Project
+#Submitted May 13, 2020
+#helper.py is the python file that contains helper funtions to navigate the database, an extension of database.py
+
+
 import cs304dbi as dbi 
 
 

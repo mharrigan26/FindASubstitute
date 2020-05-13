@@ -1,3 +1,12 @@
+/* 
+    FindASubstitute
+    Bianca Pio, Alexandra Bullen-Smith, Margaret Harrigan
+    CS 304 Final Project
+    Submitted May 13, 2020
+
+    database.sql has all the information for FindASubstitute
+*/
+
 CREATE TABLE employee1(
 username varchar(50) primary key,
 password varchar(60),
