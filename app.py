@@ -466,8 +466,8 @@ if __name__ == '__main__':
         port = int(sys.argv[1])
         assert(port>1024)
     else:
-        #port = 7907 #Bianca's port
-        port = os.getuid()
+        port = 7907 #Bianca's port
+        #port = os.getuid()
     # the following database code works for both PyMySQL and SQLite3
     dbi.cache_cnf()
     dbi.use('findasubstitute_db')
