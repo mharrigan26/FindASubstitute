@@ -345,17 +345,18 @@ def inputSchedule():
     employee_ID = request.form.get('employee')
     submit = request.form.get('submit')
     day = request.form.get('day')
+    endtime = request.form.get('endtime')
     time = str(request.form.get('time'))
     permanent = 1
     if submit == "process form":
         conn = dbi.connect()
         #print(employee_ID)
-        exists = helper.shiftExists(conn,permanent,day,time,employee_ID)
+        exists = helper.shiftExists(conn,permanent,day,time,endtime,employee_ID)
         if exists == True:
             flash('This shift already exists!')
         else:
             conn = dbi.connect()
-            data = helper.insertShift(conn,permanent,day,time,employee_ID)
+            data = helper.insertShift(conn,permanent,day,time,endtime,employee_ID)
 
     conn = dbi.connect()
     data = helper.getAllEmployees(conn)
