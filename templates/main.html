@@ -15,34 +15,65 @@
 
 <p>Please login or join, using one of the forms below:</p>    
 
-<form id="joinform" action="{{url_for('join')}}" method="post">
-    <h2>Join</h2>
-    <p><label><input type="text" name="name" required pattern="^\w+$"> Name</label></p>
-    <p><label><input type="text" name="email" required pattern="^\w+$"> Email (before the @)</label></p>
-    <p><label><input type="text" name="username" required pattern="^\w+$"> Username</label></p>
-    <p><label><input type="password" name="password1" required> Password </label></p>
-    <p><label><input type="password" name="password2" required> Password again </label></p>
-    <p><button type="submit">Submit</button></p>
-</form>
-    
-<form id="loginformE" action="{{url_for('loginE')}}" method="post">
-    <h2>Employee Login</h2>
-    <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
-    <p><label>Password: <input type="password" name="password" required></label></p>
-    <p><button type="submit">Submit</button></p>
-</form>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Make')">Make an Account</button>
+  <button class="tablinks" onclick="openTab(event, 'Admin')">Admin Login</button>
+  <button class="tablinks" onclick="openTab(event, 'Employee')">Employee Login</button>
+</div>
 
-<form id="loginformA" action="{{url_for('loginA')}}" method="post">
-    <h2>Administrator Login</h2>
-    <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
-    <p><label>Password: <input type="password" name="password" required></label></p>
-    <p><button type="submit">Submit</button></p>
-</form>
+<div id="Make" class="tabcontent">
+  <h3>Create an Account</h3>
+    <form id="joinform" action="{{url_for('join')}}" method="post">
+        <h2>Join</h2>
+        <p><label><input type="text" name="name" required pattern="^\w+$"> Name</label></p>
+        <p><label><input type="text" name="email" required pattern="^\w+$"> Email (before the @)</label></p>
+        <p><label><input type="text" name="username" required pattern="^\w+$"> Username</label></p>
+        <p><label><input type="password" name="password1" required> Password </label></p>
+        <p><label><input type="password" name="password2" required> Password again </label></p>
+        <p><button type="submit">Submit</button></p>
+    </form>
+</div>
+
+<div id="Admin" class="tabcontent">
+    <h3>Admin</h3>
+    <form id="loginformA" action="{{url_for('loginA')}}" method="post">
+        <h2>Administrator Login</h2>
+        <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
+        <p><label>Password: <input type="password" name="password" required></label></p>
+        <p><button type="submit">Submit</button></p>
+    </form>
+</div>
+
+<div id="Employee" class="tabcontent">
+  <h3>Employee</h3>
+    <form id="loginformE" action="{{url_for('loginE')}}" method="post">
+        <h2>Employee Login</h2>
+        <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
+        <p><label>Password: <input type="password" name="password" required></label></p>
+        <p><button type="submit">Submit</button></p>
+    </form>
+</div>
+
 {% endblock %}
     
 
 {% block jquery_scripts %}
 <script>
+
+function openTab(evt, id) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(id).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
 $("#joinform").on('submit', function (event) {
      var pw1 = $(this).find('[name=password1]').val();
      var pw2 = $(this).find('[name=password2]').val();
@@ -51,7 +82,9 @@ $("#joinform").on('submit', function (event) {
          // something more sophisticated than alert would be nice
          alert("passwords don't match");
      }
-});
+})
+
+
 </script>
 
 {% endblock %}
