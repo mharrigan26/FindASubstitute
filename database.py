@@ -7,7 +7,7 @@ dbi.use('findasubstitute_db')
 #sees if an entered username already exists
 def usernameAvailability(conn, username):
     curs = dbi.dict_cursor(conn)
-    sql = 'select * from employee where username = %s'
+    sql = 'select * from employee1 where username = %s'
     vals = [username]
     curs.execute(sql, vals)
     available = curs.fetchall()
