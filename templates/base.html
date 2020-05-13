@@ -16,7 +16,7 @@
         }
 
         body {
-            font-family: 'Geneva', sans-serif;
+            font-family: 'Roboto';
             color: #000000;
             background-color: #aedcfa;
             margin: 20px 2em;
@@ -37,6 +37,8 @@
             font-size: 24px;
             margin-right: 30px;
             margin-bottom: 30px;
+            font-family: 'Roboto';
+            border-radius: 4px;
         }
             
         /* Change background color of buttons on hover */
@@ -63,7 +65,12 @@
         .tab {
             overflow: hidden;
             background-color: #aedcfa;
-            width: 700px;
+            width: 1400px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
         }
     </style>
     {% block head_stuff %} {% endblock %}
@@ -82,15 +89,13 @@
 {% endwith %}
 
 {% block nav %}
-<div id="navigation">
-    <ul>
-        <li><a href="{{url_for('index')}}">Home</a> 
-        <li><a href="{{url_for('shifts')}}">Find Shifts</a></li>
-        <li><a href="{{url_for('input_availability')}}">Input Availbilty</a></li>
-        <li><a href="{{url_for('request_coverage')}}">Request Coverage</a></li>
-        <li><a href="{{url_for('profile')}}">Profile</a> 
-        <li><a href="{{url_for('logout')}}">Logout</a> 
-    </ul>        
+<div id="navigation" class = "tab">
+        <a href="{{url_for('index')}}"><button>Home</button></a>
+        <a href="{{url_for('shifts')}}"><button>Find Shifts</button></a>
+        <a href="{{url_for('input_availability')}}"><button>Input Availability</button></a>
+        <a href="{{url_for('request_coverage')}}"><button>Request Coverage</button></a>
+        <a href="{{url_for('profile')}}"><button>Profile</button></a>
+        <a href="{{url_for('logout')}}"><button>Logout</button></a>
 </div>
 {% endblock %}
 

@@ -4,7 +4,66 @@
     <meta charset='utf-8'>
     <meta name=author content="Bianca Pio">
     <title>{{ page_title }}</title>
-    <link rel='stylesheet' href="{{url_for('static', filename = 'style.css')}}">
+    <style>
+        #messages {
+            color: red;
+            font-style: italic;
+        }
+
+        h1 {
+            font-size: 200%;
+            color: rgb(0, 0, 0);
+        }
+
+        body {
+            font-family: 'Roboto';
+            color: #000000;
+            background-color: #aedcfa;
+            margin: 20px 2em;
+            text-align: left;
+            padding: 25px 25px;
+
+        }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: #E2F3FE;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 24px;
+            margin-right: 30px;
+            margin-bottom: 30px;
+            font-family: 'Roboto';
+            border-radius: 4px;
+        }
+            
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #82C5F1;
+        }
+            
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: #5BABDF;
+        }
+            
+            
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            background-color: #aedcfa;
+            width: 1400px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
     {% block head_stuff %} {% endblock %}
 </head>
 <body>
@@ -20,15 +79,15 @@
 {% endwith %}
 
 {% block nav %}
-<div id="navigation">
-    <ul>
-        <li><a href="{{url_for('index')}}">Home</a> 
-        <li><a href="{{url_for('inputSchedule')}}">Input Schedule</a></li>
-        <li><a href="{{url_for('search')}}">Search Shifts by Username</a></li>
-        <li><a href="{{url_for('adminfunctions')}}">Administrator Functions</a></li>
-        <li><a href="{{url_for('logout')}}">Logout</a> 
-    </ul>        
+
+<div id="navigation" class = "tab">
+    <a href="{{url_for('index')}}"><button>Home</button></a>
+    <a href="{{url_for('inputSchedule')}}"><button>Input Schedule</button></a>
+    <a href="{{url_for('search')}}"><button>Search Shifts by Username</button></a>
+    <a href="{{url_for('adminfunctions')}}"><button>Administrator Functions</button></a>
+    <a href="{{url_for('logout')}}"><button>Logout</button></a>
 </div>
+
 {% endblock %}
 
 {% block main_content %}
