@@ -27,4 +27,16 @@
     </p>
 </body>
 
+<h1>Shifts You are Currently Covering</h1>
+<ol>
+{% for shift in covered %}
+
+<li>
+    <p>Request number: {{shift['request_id']}}</p> 
+    <p>Request made by: {{shift['req_employee']}}@wellesley.edu</p> 
+    <p>Time: {{shift['day']}} {{shift['time']}} until {{shift['endtime']}}</p> 
+</li>
+
+{%endfor%}
+</ol>
 {% endblock %}

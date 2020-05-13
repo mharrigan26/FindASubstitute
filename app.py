@@ -11,6 +11,11 @@ import helper
 import os
 import bcrypt
 
+# for thread safety
+from threading import Lock
+
+grablock = Lock()
+
 # for file upload
 app.config['UPLOADS'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 1*1024*1024 # 1 MB
@@ -263,10 +268,19 @@ def logout():
 @app.route('/shifts/', methods=['GET'])
 def shifts():
     if request.method == 'GET':
-        conn = dbi.connect()
-        info = database.available(conn)
-        return render_template('available_shifts.html', title='Available Shifts', shifts=info, conn=conn)
-
+        try:
+            if 'username' in session:
+                employee = session['username']
+                conn = dbi.connect()
+                info = database.available(conn)
+                covered = database.shiftEmployeeisCovering(conn,employee)
+                return render_template('available_shifts.html', title='Available Shifts', shifts=info, conn=conn,covered = covered)
+            else:
+                flash('you are not logged in. Please login or join to grab shifts')
+                return redirect( url_for('index') )
+        except Exception as err:
+            flash('some kind of error '+str(err))
+            return redirect( url_for('index') )
 #route to pick up a shift
 @app.route('/grabShift/', methods=["GET",'POST'])
 def grabShift():
@@ -274,10 +288,18 @@ def grabShift():
     shift = request.form.get('shiftid')
     try:
         if 'username' in session:
+            grablock.acquire()
             username = session['username']
-            data = database.changeOwnershipCovered(conn,shift,username)
-            flash(str("Shift Grabbed by " + username))
-            return redirect( url_for('shifts') )
+            isCovered = database.isCovered(conn,shift)
+            if isCovered:
+                flash("This shift is already covered")
+                grablock.release()
+                return redirect( url_for('shifts') )
+            else:
+                data = database.changeOwnershipCovered(conn,shift,username)
+                flash(str("Shift Grabbed by " + username))
+                grablock.release()
+                return redirect( url_for('shifts') )
         else:
             flash('you are not logged in. Please login or join to grab shifts')
             return redirect( url_for('index') )
@@ -302,8 +324,10 @@ def adminfunctions():
                 employee_ID = request.form.get('employee')
                 submit = request.form.get('submit')
                 if submit == 'delete':
+                    grablock.acquire()
                     conn = dbi.connect()
                     database.deleteEmployee(conn,employee_ID)
+                    grablock.release()
                     flash("Employee " + employee_ID + " deleted")
                     return redirect(url_for('adminfunctions'))
         else:

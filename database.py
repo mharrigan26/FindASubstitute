@@ -127,3 +127,18 @@ def insertAvailability(conn,username, start_time, end_time, day):
     curs = dbi.dict_cursor(conn)
     curs.execute('''insert into person_availability(employee, day, time, endtime) values(%s, %s, %s,%s)''', [username, day, start_time, end_time])
     conn.commit()
+
+def isCovered(conn,shift):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select covered from coverage where shift = %s''',[shift])
+    info = curs.fetchall()
+    return info == 1
+
+def shiftEmployeeisCovering(conn,employee):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select coverage.request_id, coverage.req_employee, shift1.time, shift1.day, shift1.endtime, coverage.shift 
+    from coverage, shift1 
+    where coverage.shift = shift1.shift_id AND coverage.covered = 1 and coverage.cover_employee = %s''',[employee])
+    info = curs.fetchall()
+    return info
+   
