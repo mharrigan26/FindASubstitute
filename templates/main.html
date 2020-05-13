@@ -4,16 +4,65 @@
     {% extends "base.html" %}
 {%endif%}
 
+{% block head_stuff %} 
+<style>
+ /* Style the buttons inside the tab */
+ body{
+   text-align:left;
+   padding: 14px 16px;
+ }
+ 
+ .tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+  }
+      
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    background-color: #ddd;
+  }
+      
+  /* Create an active/current tablink class */
+  .tab button.active {
+    background-color: #ccc;
+  }
+      
+  /* Style the tab content */
+  .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+  }
+
+      
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+</style>
+{% endblock %}
+
 {% block nav %}
 <div id="navigation">     
 </div>
 {% endblock %}
 
 {% block main_content %}
-
 <h1>Welcome to Wellesley's Find A Substitute</h1>
 
-<p>Please login or join, using one of the forms below:</p>    
+<h2>Please log into your account below</h2>
+
+<p>  If you don't have an account yet, click on the 
+  Make an Account tab to make one</p>
 
 <div class="tab">
   <button class="tablinks" onclick="openTab(event, 'Make')">Make an Account</button>
@@ -22,44 +71,37 @@
 </div>
 
 <div id="Make" class="tabcontent">
-  <h3>Create an Account</h3>
-    <form id="joinform" action="{{url_for('join')}}" method="post">
-        <h2>Join</h2>
-        <p><label><input type="text" name="name" required pattern="^\w+$"> Name</label></p>
-        <p><label><input type="text" name="email" required pattern="^\w+$"> Email (before the @)</label></p>
-        <p><label><input type="text" name="username" required pattern="^\w+$"> Username</label></p>
-        <p><label><input type="password" name="password1" required> Password </label></p>
-        <p><label><input type="password" name="password2" required> Password again </label></p>
-        <p><button type="submit">Submit</button></p>
-    </form>
+  <form id="joinform" action="{{url_for('join')}}" method="post">
+  <h2>New Account Information</h2>
+  <p><label><input type="text" name="name" required pattern="^\w+$"> Name</label></p>
+  <p><label><input type="text" name="email" required pattern="^\w+$"> Email (before the @)</label></p>
+  <p><label><input type="text" name="username" required pattern="^\w+$"> Username</label></p>
+  <p><label><input type="password" name="password1" required> Password </label></p>
+  <p><label><input type="password" name="password2" required> Password again </label></p>
+  <p><button type="submit">Submit</button></p>
+  </form>
 </div>
 
 <div id="Admin" class="tabcontent">
-    <h3>Admin</h3>
-    <form id="loginformA" action="{{url_for('loginA')}}" method="post">
-        <h2>Administrator Login</h2>
-        <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
-        <p><label>Password: <input type="password" name="password" required></label></p>
-        <p><button type="submit">Submit</button></p>
-    </form>
-</div>
+  <form id="loginformA" action="{{url_for('loginA')}}" method="post">
+  <h2>Administrator Login</h2>
+  <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
+  <p><label>Password: <input type="password" name="password" required></label></p>
+  <p><button type="submit">Submit</button></p>
+  </form>
+  </div>
+  
+  <div id="Employee" class="tabcontent">
+  <form id="loginformE" action="{{url_for('loginE')}}" method="post">
+  <h2>Employee Login</h2>
+  <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
+  <p><label>Password: <input type="password" name="password" required></label></p>
+  <p><button type="submit">Submit</button></p>
+  </form>
+  </div>
 
-<div id="Employee" class="tabcontent">
-  <h3>Employee</h3>
-    <form id="loginformE" action="{{url_for('loginE')}}" method="post">
-        <h2>Employee Login</h2>
-        <p><label>Username: <input type="text" name="username" required pattern="^\w+$"></label></p>
-        <p><label>Password: <input type="password" name="password" required></label></p>
-        <p><button type="submit">Submit</button></p>
-    </form>
-</div>
 
-{% endblock %}
-    
-
-{% block jquery_scripts %}
 <script>
-
 function openTab(evt, id) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
@@ -73,6 +115,13 @@ function openTab(evt, id) {
   document.getElementById(id).style.display = "block";
   evt.currentTarget.className += " active";
 }
+</script>
+
+{% endblock %}
+    
+
+{% block jquery_scripts %}
+<script>
 
 $("#joinform").on('submit', function (event) {
      var pw1 = $(this).find('[name=password1]').val();
@@ -83,7 +132,6 @@ $("#joinform").on('submit', function (event) {
          alert("passwords don't match");
      }
 })
-
 
 </script>
 

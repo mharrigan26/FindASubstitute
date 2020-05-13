@@ -5,7 +5,13 @@
     <meta name=author content="Bianca Pio">
     <title>{{ title }}</title>
     <link rel='stylesheet' href="{{url_for('static', filename = 'style.css')}}">
+    <style>
+        body {
+            color:rgb(0, 0, 0)
+        }
+    </style>
     {% block head_stuff %} {% endblock %}
+    
 </head>
 <body>
 
