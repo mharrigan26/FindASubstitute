@@ -42,7 +42,7 @@ def index():
             conn = dbi.connect()
             isAdmin = database.isAdmin(conn,username)
             return render_template('greet.html',
-                                   page_title='Find A Substitute: Welcome {}'.format(username),
+                                   title='Find A Substitute: Welcome {}'.format(username),
                                    name=username, isAdmin = isAdmin)
         else:
             flash('you are not logged in. Please login or join')
@@ -62,7 +62,7 @@ def user(username):
             conn = dbi.connect()
             isAdmin = database.isAdmin(conn,username)
             return render_template('greet.html',
-                                   page_title='My App: Welcome {}'.format(username),
+                                   title='Find A Substitute: Welcome {}'.format(username),
                                    name=username, isAdmin = isAdmin)
         else:
             flash('you are not logged in. Please login or join')
@@ -142,7 +142,7 @@ def upload():
             return redirect(url_for('profile'))
         except Exception as err:
             flash('Upload failed {why}'.format(why=err))
-            return render_template('profile.html',src='',nm='')
+            return render_template('profile.html',src='',nm='', title="Profile")
 
 
 #route for joining find a substitute
@@ -319,7 +319,7 @@ def adminfunctions():
                 availablities = database.findAllAvailabilities(conn)
                 master = database.getAllShifts(conn)
                 return render_template('adminFunctions.html', list = data, shifts = info, 
-                available= availablities,master = master )
+                available= availablities,master = master, title = "Admin Functions" )
             if request.method == "POST":
                 employee_ID = request.form.get('employee')
                 submit = request.form.get('submit')
@@ -359,7 +359,7 @@ def inputSchedule():
 
     conn = dbi.connect()
     data = helper.getAllEmployees(conn)
-    return render_template('inputSchedule.html', list = data)
+    return render_template('inputSchedule.html', list = data, title="Input Schedule")
 
 #route to input shifts you are available for
 @app.route('/input_availability/', methods=["GET","POST"])
@@ -381,9 +381,9 @@ def input_availability():
         conn = dbi.connect()
         database.insertAvailability(conn,username, start_time, end_time, day)
         flash("availability updated")
-        return render_template('input_availability.html')
+        return render_template('input_availability.html', title="Input Availability")
     else:
-        return render_template('input_availability.html')
+        return render_template('input_availability.html', title="Input Availability")
 
 #route to request coverage of a shift
 @app.route('/request_coverage/', methods=["GET","POST"])
@@ -405,14 +405,14 @@ def request_coverage():
         data = helper.getAllEmployees(conn)
         info = database.getSpecEmployeeShifts(conn, employee_ID)
         length = len(info)
-        return render_template('request_coverage.html', shifts = info, length = length)
+        return render_template('request_coverage.html', shifts = info, length = length, title="Request Coverage")
     else:
         shift = request.form.get('shiftid')
         print (shift)
         print(employee_ID)
         database.requestCoverage(conn, employee_ID, shift)
         flash('You have successfully requested coverage')
-        return render_template('request_coverage.html')
+        return render_template('request_coverage.html', title="Request Coverage")
 
 #route to search for the shifts of a specific person        
 @app.route('/search/', methods=["GET", "POST"])
@@ -441,7 +441,7 @@ def search():
                 return redirect(url_for('usershifts', username=username))
             else:
                 flash("Employee does not exist.")
-                return render_template('search.html')
+                return render_template('search.html', title="Search by Employee")
 
 @app.route('/usershifts/<username>', methods=["GET"])
 def usershifts(username):
@@ -457,7 +457,7 @@ def usershifts(username):
 
     conn = dbi.connect()
     info = database.getSpecEmployeeShifts(conn, username)
-    return render_template('user_shifts.html', shifts=info, username=username)
+    return render_template('user_shifts.html', shifts=info, username=username, title="User Shifts")
 
 if __name__ == '__main__':
     import sys, os
